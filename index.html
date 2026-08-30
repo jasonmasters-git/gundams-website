@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Gundam Collection</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+    }
+
+    /* =========================
+       CONTROLS
+       ========================= */
+
+    .controls {
+      margin-bottom: 20px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    input,
+    select {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: white;
+    }
+
+    input {
+      min-width: 250px;
+    }
+
+    /* =========================
+       STATISTICS
+       ========================= */
+
+    .stats {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+    }
+
+    .stats div {
+      background: #ffffff;
+      padding: 14px 18px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+      min-width: 120px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .stat-number {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    /* =========================
+       INVENTORY GRID
+       ========================= */
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(
+        auto-fill,
+        minmax(260px, 1fr)
+      );
+      gap: 16px;
+    }
+
+    /* =========================
+       CARDS
+       ========================= */
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      overflow: hidden;
+    }
+
+    .card:hover {
+      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+    }
+
+    /* =========================
+       IMAGES
+       ========================= */
+
+    .mini-image {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .mini-image:hover {
+      transform: scale(1.02);
+    }
+
+    /* =========================
+       TEXT
+       ========================= */
+
+    .model-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .meta {
+      color: #555;
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    /* =========================
+       BUILT STATUS
+       ========================= */
+
+    .built {
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .built-yes {
+      color: #127227;
+    }
+
+    .built-no {
+      color: #b3261e;
+    }
+
+    /* =========================
+       EMPTY RESULTS
+       ========================= */
+
+    .no-results {
+      grid-column: 1 / -1;
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 10px;
+      color: #666;
+    }
+
+    /* =========================
+       MOBILE
+       ========================= */
+
+    @media (max-width: 600px) {
+
+      body {
+        margin: 15px;
+      }
+
+      input {
+        width: 100%;
+        min-width: 0;
+      }
+
+      select {
+        width: 100%;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <h1>Gundam Collection</h1>
+
+  <!-- =========================
+       FILTERS
+       ========================= -->
+
+  <div class="controls">
+
+    <input
+      id="searchBox"
+      type="text"
+      placeholder="Search Gundams..."
+    />
+
+    <select id="franchiseFilter">
+      <option value="">All Franchises</option>
+    </select>
+
+    <select id="scaleFilter">
+      <option value="">All Scales</option>
+    </select>
+
+    <select id="builtFilter">
+      <option value="">All Models</option>
+      <option value="Yes">Built</option>
+      <option value="No">Unbuilt</option>
+    </select>
+
+  </div>
+
+
+  <!-- =========================
+       STATISTICS
+       ========================= -->
+
+  <div class="stats">
+
+    <div>
+      <div class="stat-label">
+        Total Kits
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalModels"
+      >
+        0
+      </div>
+    </div>
+
+
+    <div>
+      <div class="stat-label">
+        Built
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalBuilt"
+      >
+        0
+      </div>
+    </div>
+
+
+    <div>
+      <div class="stat-label">
+        Unbuilt
+      </div>
+
+      <div
+        class="stat-number"
+        id="totalUnbuilt"
+      >
+        0
+      </div>
+    </div>
+
+
+    <div>
+      <div class="stat-label">
+        Build %
+      </div>
+
+      <div
+        class="stat-number"
+        id="buildPercentage"
+      >
+        0%
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       INVENTORY
+       ========================= -->
+
+  <div
+    id="inventory"
+    class="grid"
+  ></div>
+
+
+  <script>
+
+    /* =========================================
+       GOOGLE SHEETS CSV URL
+       ========================================= */
+
+    const csvUrl =
+      "https://docs.google.com/spreadsheets/d/1Zhv_pQT6RcCrxuit1GuWDAYoQAUYzMrJ1c_oBUtRq2w/edit?gid=0#gid=0";
+
+
+    let inventory = [];
+
+
+    /* =========================================
+       LOAD GOOGLE SHEET
+       ========================================= */
+
+    async function loadInventory() {
+
+      try {
+
+        const response = await fetch(csvUrl);
+
+        if (!response.ok) {
+          throw new Error(
+            "Unable to load Google Sheet"
+          );
+        }
+
+        const text =
+          await response.text();
+
+
+        /*
+         * Parse CSV
+         *
+         * This handles commas inside
+         * quoted spreadsheet cells better
+         * than a simple split(",").
+         */
+
+        const rows =
+          parseCSV(text);
+
+
+        const headers =
+          rows.shift();
+
+
+        inventory =
+          rows.map(row => {
+
+            let item = {};
+
+
+            headers.forEach(
+              (header, index) => {
+
+                item[header.trim()] =
+                  row[index]
+                    ? row[index].trim()
+                    : "";
+
+              }
+            );
+
+
+            return item;
+
+          });
+
+
+        populateFilters();
+
+        renderInventory();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Error loading inventory:",
+          error
+        );
+
+
+        document.getElementById(
+          "inventory"
+        ).innerHTML = `
+
+          <div class="no-results">
+
+            Unable to load the Gundam inventory.
+
+            <br><br>
+
+            Check that your Google Sheet
+            is published and that the CSV URL
+            is correct.
+
+          </div>
+
+        `;
+
+      }
+
+    }
+
+
+    /* =========================================
+       CSV PARSER
+       ========================================= */
+
+    function parseCSV(text) {
+
+      const rows = [];
+
+      let row = [];
+
+      let value = "";
+
+      let insideQuotes = false;
+
+
+      for (
+        let i = 0;
+        i < text.length;
+        i++
+      ) {
+
+        const char =
+          text[i];
+
+        const nextChar =
+          text[i + 1];
+
+
+        /*
+         * Handle quotation marks
+         */
+
+        if (
+          char === '"' &&
+          insideQuotes &&
+          nextChar === '"'
+        ) {
+
+          value += '"';
+
+          i++;
+
+        }
+
+        else if (
+          char === '"'
+        ) {
+
+          insideQuotes =
+            !insideQuotes;
+
+        }
+
+
+        /*
+         * Handle commas
+         */
+
+        else if (
+          char === "," &&
+          !insideQuotes
+        ) {
+
+          row.push(value);
+
+          value = "";
+
+        }
+
+
+        /*
+         * Handle new lines
+         */
+
+        else if (
+          (char === "\n" ||
+           char === "\r") &&
+          !insideQuotes
+        ) {
+
+          if (
+            char === "\r" &&
+            nextChar === "\n"
+          ) {
+
+            i++;
+
+          }
+
+
+          row.push(value);
+
+          value = "";
+
+
+          if (row.length > 1 ||
+              row[0] !== "") {
+
+            rows.push(row);
+
+          }
+
+
+          row = [];
+
+        }
+
+        else {
+
+          value += char;
+
+        }
+
+      }
+
+
+      /*
+       * Add final row
+       */
+
+      if (value.length > 0 ||
+          row.length > 0) {
+
+        row.push(value);
+
+        rows.push(row);
+
+      }
+
+
+      return rows;
+
+    }
+
+
+    /* =========================================
+       GOOGLE DRIVE IMAGE CONVERTER
+       ========================================= */
+
+    function getImageUrl(url) {
+
+      if (!url) {
+        return "";
+      }
+
+
+      /*
+       * Already using the working
+       * Google image format
+       */
+
+      if (
+        url.includes(
+          "lh3.googleusercontent.com/d/"
+        )
+      ) {
+
+        return url;
+
+      }
+
+
+      /*
+       * Standard Google Drive URL
+       *
+       * /file/d/FILE_ID/view
+       */
+
+      let match =
+        url.match(
+          /drive\.google\.com\/file\/d\/([^\/]+)/
+        );
+
+
+      if (match) {
+
+        return (
+          "https://lh3.googleusercontent.com/d/"
+          + match[1]
+        );
+
+      }
+
+
+      /*
+       * Google Drive URL
+       *
+       * ?id=FILE_ID
+       */
+
+      match =
+        url.match(
+          /[?&]id=([^&]+)/
+        );
+
+
+      if (match) {
+
+        return (
+          "https://lh3.googleusercontent.com/d/"
+          + match[1]
+        );
+
+      }
+
+
+      /*
+       * If it isn't a recognized
+       * Google Drive URL, return
+       * the original URL.
+       */
+
+      return url;
+
+    }
+
+
+    /* =========================================
+       POPULATE FILTERS
+       ========================================= */
+
+    function populateFilters() {
+
+      const franchises =
+        [
+          ...new Set(
+            inventory
+              .map(i => i.Franchise)
+              .filter(Boolean)
+          )
+        ].sort();
+
+
+      const scales =
+        [
+          ...new Set(
+            inventory
+              .map(i => i.Scale)
+              .filter(Boolean)
+          )
+        ].sort();
+
+
+      const franchiseFilter =
+        document.getElementById(
+          "franchiseFilter"
+        );
+
+
+      const scaleFilter =
+        document.getElementById(
+          "scaleFilter"
+        );
+
+
+      /*
+       * Franchise options
+       */
+
+      franchises.forEach(
+        franchise => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            franchise;
+
+          option.textContent =
+            franchise;
+
+
+          franchiseFilter.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      /*
+       * Scale options
+       */
+
+      scales.forEach(
+        scale => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            scale;
+
+          option.textContent =
+            scale;
+
+
+          scaleFilter.appendChild(
+            option
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================================
+       UPDATE STATISTICS
+       ========================================= */
+
+    function updateStats(items) {
+
+      const total =
+        items.length;
+
+
+      const built =
+        items.filter(
+          item =>
+            String(item.Built)
+              .toLowerCase()
+              === "yes"
+        ).length;
+
+
+      const unbuilt =
+        total - built;
+
+
+      const percentage =
+        total > 0
+          ? Math.round(
+              (built / total) * 100
+            )
+          : 0;
+
+
+      document.getElementById(
+        "totalModels"
+      ).textContent =
+        total;
+
+
+      document.getElementById(
+        "totalBuilt"
+      ).textContent =
+        built;
+
+
+      document.getElementById(
+        "totalUnbuilt"
+      ).textContent =
+        unbuilt;
+
+
+      document.getElementById(
+        "buildPercentage"
+      ).textContent =
+        percentage + "%";
+
+    }
+
+
+    /* =========================================
+       RENDER INVENTORY
+       ========================================= */
+
+    function renderInventory() {
+
+      const search =
+        document.getElementById(
+          "searchBox"
+        ).value
+          .toLowerCase();
+
+
+      const franchise =
+        document.getElementById(
+          "franchiseFilter"
+        ).value;
+
+
+      const scale =
+        document.getElementById(
+          "scaleFilter"
+        ).value;
+
+
+      const built =
+        document.getElementById(
+          "builtFilter"
+        ).value;
+
+
+      const container =
+        document.getElementById(
+          "inventory"
+        );
+
+
+      container.innerHTML = "";
+
+
+      /*
+       * Filter inventory
+       */
+
+      const filtered =
+        inventory.filter(item => {
+
+          const name =
+            (item.Name || "")
+              .toLowerCase();
+
+
+          const itemBuilt =
+            String(item.Built || "")
+              .trim();
+
+
+          return (
+
+            (
+              !search ||
+              name.includes(search)
+            )
+
+            &&
+
+            (
+              !franchise ||
+              item.Franchise === franchise
+            )
+
+            &&
+
+            (
+              !scale ||
+              item.Scale === scale
+            )
+
+            &&
+
+            (
+              !built ||
+              itemBuilt === built
+            )
+
+          );
+
+        });
+
+
+      /*
+       * Update statistics
+       */
+
+      updateStats(filtered);
+
+
+      /*
+       * No results
+       */
+
+      if (filtered.length === 0) {
+
+        container.innerHTML = `
+
+          <div class="no-results">
+
+            No Gundams match your filters.
+
+          </div>
+
+        `;
+
+        return;
+
+      }
+
+
+      /*
+       * Create cards
+       */
+
+      filtered.forEach(
+        item => {
+
+          const card =
+            document.createElement(
+              "div"
+            );
+
+
+          card.className =
+            "card";
+
+
+          /*
+           * Image
+           */
+
+          const imageUrl =
+            getImageUrl(
+              item.Image
+            );
+
+
+          /*
+           * Built status
+           */
+
+          const built =
+            String(
+              item.Built || ""
+            ).trim();
+
+
+          const isBuilt =
+            built.toLowerCase()
+              === "yes";
+
+
+          const builtClass =
+            isBuilt
+              ? "built-yes"
+              : "built-no";
+
+
+          const builtText =
+            isBuilt
+              ? "Built"
+              : "Unbuilt";
+
+
+          /*
+           * Card HTML
+           */
+
+          card.innerHTML = `
+
+            ${
+              imageUrl
+                ? `
+
+                  <a
+                    href="${imageUrl}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+
+                    <img
+                      class="mini-image"
+                      src="${imageUrl}"
+                      alt="${item.Name || "Gundam"}"
+                      onerror="
+                        this.style.display='none';
+                      "
+                    >
+
+                  </a>
+
+                `
+                : ""
+            }
+
+
+            <div class="model-name">
+
+              ${item.Name || "Unnamed Model"}
+
+            </div>
+
+
+            <div class="meta">
+
+              Franchise:
+              ${item.Franchise || "Unknown"}
+
+            </div>
+
+
+            <div class="meta">
+
+              Scale:
+              ${item.Scale || "Unknown"}
+
+            </div>
+
+
+            <div
+              class="built ${builtClass}"
+            >
+
+              ${builtText}
+
+            </div>
+
+          `;
+
+
+          container.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================================
+       EVENT LISTENERS
+       ========================================= */
+
+    document
+      .getElementById(
+        "searchBox"
+      )
+      .addEventListener(
+        "input",
+        renderInventory
+      );
+
+
+    document
+      .getElementById(
+        "franchiseFilter"
+      )
+      .addEventListener(
+        "change",
+        renderInventory
+      );
+
+
+    document
+      .getElementById(
+        "scaleFilter"
+      )
+      .addEventListener(
+        "change",
+        renderInventory
+      );
+
+
+    document
+      .getElementById(
+        "builtFilter"
+      )
+      .addEventListener(
+        "change",
+        renderInventory
+      );
+
+
+    /* =========================================
+       START
+       ========================================= */
+
+    loadInventory();
+
+  </script>
+
+</body>
+</html>
