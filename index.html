@@ -632,94 +632,69 @@
 
     function populateFilters() {
 
-      const franchises =
-        [
-          ...new Set(
-            inventory
-              .map(i => i.Franchise)
-              .filter(Boolean)
-          )
-        ].sort();
+  const franchiseFilter =
+    document.getElementById("franchiseFilter");
+
+  const scaleFilter =
+    document.getElementById("scaleFilter");
 
 
-      const scales =
-        [
-          ...new Set(
-            inventory
-              .map(i => i.Scale)
-              .filter(Boolean)
-          )
-        ].sort();
+  // Clear existing options
+  franchiseFilter.innerHTML =
+    '<option value="">All Franchises</option>';
+
+  scaleFilter.innerHTML =
+    '<option value="">All Scales</option>';
 
 
-      const franchiseFilter =
-        document.getElementById(
-          "franchiseFilter"
-        );
+  // Get unique franchises
+  const franchises = [
+    ...new Set(
+      inventory
+        .map(item => item.Franchise)
+        .filter(value => value && value.trim() !== "")
+    )
+  ].sort();
 
 
-      const scaleFilter =
-        document.getElementById(
-          "scaleFilter"
-        );
+  // Get unique scales
+  const scales = [
+    ...new Set(
+      inventory
+        .map(item => item.Scale)
+        .filter(value => value && value.trim() !== "")
+    )
+  ].sort();
 
 
-      /*
-       * Franchise options
-       */
+  // Add franchise options
+  franchises.forEach(franchise => {
 
-      franchises.forEach(
-        franchise => {
+    const option =
+      document.createElement("option");
 
-          const option =
-            document.createElement(
-              "option"
-            );
+    option.value = franchise;
+    option.textContent = franchise;
 
+    franchiseFilter.appendChild(option);
 
-          option.value =
-            franchise;
-
-          option.textContent =
-            franchise;
+  });
 
 
-          franchiseFilter.appendChild(
-            option
-          );
+  // Add scale options
+  scales.forEach(scale => {
 
-        }
-      );
+    const option =
+      document.createElement("option");
 
+    option.value = scale;
+    option.textContent = scale;
 
-      /*
-       * Scale options
-       */
+    scaleFilter.appendChild(option);
 
-      scales.forEach(
-        scale => {
+  });
 
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            scale;
-
-          option.textContent =
-            scale;
-
-
-          scaleFilter.appendChild(
-            option
-          );
-
-        }
-      );
-
-    }
+}
 
 
     /* =========================================
