@@ -1,33 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
   <title>Gundam Collection</title>
 
   <style>
+
+    /* =========================
+       PAGE
+       ========================= */
+
     body {
       font-family: Arial, sans-serif;
-      margin: 30px;
-      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+      background: #f4f4f4;
       color: #222;
     }
 
+
     h1 {
-      margin-bottom: 10px;
+      margin-top: 0;
+      margin-bottom: 15px;
     }
+
 
     /* =========================
        CONTROLS
        ========================= */
 
     .controls {
-      margin-bottom: 20px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
+      margin-bottom: 20px;
     }
+
 
     input,
     select {
@@ -38,39 +51,50 @@
       background: white;
     }
 
-    input {
-      min-width: 250px;
+
+    #searchBox {
+      width: 230px;
     }
+
 
     /* =========================
        STATISTICS
        ========================= */
 
     .stats {
-      display: flex;
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fit, minmax(160px, 1fr));
+
       gap: 15px;
       margin-bottom: 25px;
-      flex-wrap: wrap;
     }
 
-    .stats div {
-      background: #ffffff;
-      padding: 14px 18px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.10);
-      min-width: 120px;
+
+    .stat {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.10);
+
+      text-align: center;
     }
+
 
     .stat-label {
-      font-size: 13px;
+      font-size: 14px;
       color: #666;
-      margin-bottom: 4px;
+      margin-bottom: 8px;
     }
 
-    .stat-number {
-      font-size: 22px;
+
+    .stat-value {
+      font-size: 28px;
       font-weight: bold;
     }
+
 
     /* =========================
        INVENTORY GRID
@@ -78,62 +102,44 @@
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(
-        auto-fill,
-        minmax(260px, 1fr)
-      );
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(260px, 1fr));
+
       gap: 16px;
     }
 
+
     /* =========================
-       CARDS
+       MODEL CARD
        ========================= */
 
     .card {
       background: white;
+
       border-radius: 10px;
+
       padding: 16px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+
+      box-shadow:
+        0 2px 8px rgba(0,0,0,0.10);
+
       overflow: hidden;
     }
 
-    .card:hover {
-      box-shadow: 0 4px 14px rgba(0,0,0,0.18);
-    }
 
-    /* =========================
-       IMAGES
-       ========================= */
-
-    .mini-image {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 12px;
-      cursor: pointer;
-      transition: transform 0.2s ease;
-    }
-
-    .mini-image:hover {
-      transform: scale(1.02);
-    }
-
-    /* =========================
-       TEXT
-       ========================= */
-
-    .model-name {
-      font-size: 18px;
+    .unit {
+      font-size: 19px;
       font-weight: bold;
       margin-bottom: 8px;
     }
 
+
     .meta {
       color: #555;
       margin: 5px 0;
-      font-size: 14px;
     }
+
 
     /* =========================
        BUILT STATUS
@@ -142,29 +148,158 @@
     .built {
       margin-top: 12px;
       font-weight: bold;
+    }
+
+
+    .built-yes {
+      color: #16823b;
+    }
+
+
+    .built-no {
+      color: #c62828;
+    }
+
+
+    /* =========================
+       IMAGES
+       ========================= */
+
+    .mini-image {
+      display: block;
+
+      width: 100%;
+      height: 260px;
+
+      object-fit: cover;
+
+      border-radius: 8px;
+
+      margin-bottom: 12px;
+
+      cursor: pointer;
+
+      transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+    }
+
+
+    .mini-image:hover {
+      transform: scale(1.02);
+      opacity: 0.9;
+    }
+
+
+    /* =========================
+       NO IMAGE
+       ========================= */
+
+    .no-image {
+      width: 100%;
+      height: 260px;
+
+      display: flex;
+
+      align-items: center;
+      justify-content: center;
+
+      background: #eeeeee;
+
+      border-radius: 8px;
+
+      margin-bottom: 12px;
+
+      color: #999;
+
       font-size: 14px;
     }
 
-    .built-yes {
-      color: #127227;
-    }
-
-    .built-no {
-      color: #b3261e;
-    }
 
     /* =========================
-       EMPTY RESULTS
+       NO RESULTS
        ========================= */
 
     .no-results {
       grid-column: 1 / -1;
-      background: white;
-      padding: 30px;
+
       text-align: center;
+
+      padding: 40px;
+
+      color: #777;
+
+      background: white;
+
       border-radius: 10px;
-      color: #666;
     }
+
+
+    /* =========================
+       IMAGE MODAL
+       ========================= */
+
+    .modal {
+      display: none;
+
+      position: fixed;
+
+      z-index: 1000;
+
+      left: 0;
+      top: 0;
+
+      width: 100%;
+      height: 100%;
+
+      background: rgba(0,0,0,0.85);
+
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      box-sizing: border-box;
+    }
+
+
+    .modal.show {
+      display: flex;
+    }
+
+
+    .modal-image {
+      max-width: 95%;
+      max-height: 90vh;
+
+      object-fit: contain;
+
+      border-radius: 8px;
+    }
+
+
+    .close {
+      position: absolute;
+
+      top: 20px;
+      right: 30px;
+
+      color: white;
+
+      font-size: 40px;
+
+      font-weight: bold;
+
+      cursor: pointer;
+
+      line-height: 1;
+    }
+
+
+    .close:hover {
+      color: #ccc;
+    }
+
 
     /* =========================
        MOBILE
@@ -173,17 +308,25 @@
     @media (max-width: 600px) {
 
       body {
-        margin: 15px;
+        padding: 12px;
       }
 
-      input {
+
+      #searchBox {
         width: 100%;
-        min-width: 0;
+        box-sizing: border-box;
       }
+
+
+      .controls {
+        flex-direction: column;
+      }
+
 
       select {
         width: 100%;
       }
+
 
       .grid {
         grid-template-columns: 1fr;
@@ -192,11 +335,19 @@
     }
 
   </style>
+
 </head>
+
 
 <body>
 
+
+  <!-- =========================
+       TITLE
+       ========================= -->
+
   <h1>Gundam Collection</h1>
+
 
   <!-- =========================
        FILTERS
@@ -208,20 +359,41 @@
       id="searchBox"
       type="text"
       placeholder="Search Gundams..."
-    />
+    >
+
 
     <select id="franchiseFilter">
-      <option value="">All Franchises</option>
+
+      <option value="">
+        All Franchises
+      </option>
+
     </select>
+
 
     <select id="scaleFilter">
-      <option value="">All Scales</option>
+
+      <option value="">
+        All Scales
+      </option>
+
     </select>
 
+
     <select id="builtFilter">
-      <option value="">All Models</option>
-      <option value="Yes">Built</option>
-      <option value="No">Unbuilt</option>
+
+      <option value="">
+        All Models
+      </option>
+
+      <option value="yes">
+        Built
+      </option>
+
+      <option value="no">
+        Unbuilt
+      </option>
+
     </select>
 
   </div>
@@ -233,59 +405,67 @@
 
   <div class="stats">
 
-    <div>
+    <div class="stat">
+
       <div class="stat-label">
         Total Kits
       </div>
 
       <div
-        class="stat-number"
-        id="totalModels"
+        id="totalKits"
+        class="stat-value"
       >
         0
       </div>
+
     </div>
 
 
-    <div>
+    <div class="stat">
+
       <div class="stat-label">
         Built
       </div>
 
       <div
-        class="stat-number"
-        id="totalBuilt"
+        id="builtKits"
+        class="stat-value"
       >
         0
       </div>
+
     </div>
 
 
-    <div>
+    <div class="stat">
+
       <div class="stat-label">
         Unbuilt
       </div>
 
       <div
-        class="stat-number"
-        id="totalUnbuilt"
+        id="unbuiltKits"
+        class="stat-value"
       >
         0
       </div>
+
     </div>
 
 
-    <div>
+    <div class="stat">
+
       <div class="stat-label">
         Build %
       </div>
 
       <div
-        class="stat-number"
-        id="buildPercentage"
+        id="buildPercent"
+        class="stat-value"
       >
         0%
       </div>
+
     </div>
 
   </div>
@@ -301,75 +481,350 @@
   ></div>
 
 
+  <!-- =========================
+       IMAGE MODAL
+       ========================= -->
+
+  <div
+    id="imageModal"
+    class="modal"
+  >
+
+    <span
+      id="closeModal"
+      class="close"
+    >
+      &times;
+    </span>
+
+
+    <img
+      id="modalImage"
+      class="modal-image"
+      src=""
+      alt="Full size Gundam"
+    >
+
+  </div>
+
+
   <script>
 
-    /* =========================================
-       GOOGLE SHEETS CSV URL
-       ========================================= */
+
+    /* =========================================================
+       GOOGLE SHEET
+       ========================================================= */
 
     const csvUrl =
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vQp4lE0UwI-5wQSvnH09swpvvmm_lPQ4g34hb717wIRx_r9zEncqzzHt8jwyQIoJIoAzI0OUWjaigN3/pubhtml?gid=0&single=true";
+      "https://docs.google.com/spreadsheets/d/e/2PACX-1vQp4lE0UwI-5wQSvnH09swpvvmm_lPQ4g34hb717wIRx_r9zEncqzzHt8jwyQIoJIoAzI0OUWjaigN3/pub?gid=0&single=true&output=csv";
 
 
     let inventory = [];
 
 
-    /* =========================================
+    /* =========================================================
+       CSV PARSER
+       
+       This handles commas inside quoted spreadsheet cells.
+       ========================================================= */
+
+    function parseCSV(text) {
+
+      const rows = [];
+
+      let row = [];
+
+      let cell = "";
+
+      let insideQuotes = false;
+
+
+      for (let i = 0; i < text.length; i++) {
+
+        const character = text[i];
+
+        const nextCharacter =
+          text[i + 1];
+
+
+        /* Handle escaped quotes */
+
+        if (
+          character === '"' &&
+          insideQuotes &&
+          nextCharacter === '"'
+        ) {
+
+          cell += '"';
+
+          i++;
+
+          continue;
+
+        }
+
+
+        /* Start/end quotes */
+
+        if (character === '"') {
+
+          insideQuotes =
+            !insideQuotes;
+
+          continue;
+
+        }
+
+
+        /* Comma = next cell */
+
+        if (
+          character === "," &&
+          !insideQuotes
+        ) {
+
+          row.push(cell);
+
+          cell = "";
+
+          continue;
+
+        }
+
+
+        /* New line = next row */
+
+        if (
+          (character === "\n" ||
+           character === "\r") &&
+          !insideQuotes
+        ) {
+
+          if (
+            character === "\r" &&
+            nextCharacter === "\n"
+          ) {
+
+            i++;
+
+          }
+
+
+          row.push(cell);
+
+          rows.push(row);
+
+
+          row = [];
+
+          cell = "";
+
+          continue;
+
+        }
+
+
+        cell += character;
+
+      }
+
+
+      /* Add final cell */
+
+      if (cell !== "" || row.length > 0) {
+
+        row.push(cell);
+
+        rows.push(row);
+
+      }
+
+
+      return rows;
+
+    }
+
+
+    /* =========================================================
+       CONVERT GOOGLE DRIVE LINKS
+       ========================================================= */
+
+    function convertImageUrl(url) {
+
+      if (!url) {
+        return "";
+      }
+
+
+      url = url.trim();
+
+
+      /*
+       * Already using lh3.googleusercontent.com
+       */
+
+      if (
+        url.includes(
+          "lh3.googleusercontent.com"
+        )
+      ) {
+
+        return url;
+
+      }
+
+
+      /*
+       * Google Drive:
+       *
+       * https://drive.google.com/file/d/FILE_ID/view
+       */
+
+      const driveMatch =
+        url.match(
+          /drive\.google\.com\/file\/d\/([^\/]+)/
+        );
+
+
+      if (driveMatch) {
+
+        const fileId =
+          driveMatch[1];
+
+
+        return (
+          "https://lh3.googleusercontent.com/d/" +
+          fileId
+        );
+
+      }
+
+
+      /*
+       * Google Drive:
+       *
+       * https://drive.google.com/uc?id=FILE_ID
+       */
+
+      const ucMatch =
+        url.match(
+          /drive\.google\.com\/.*[?&]id=([^&]+)/
+        );
+
+
+      if (ucMatch) {
+
+        const fileId =
+          ucMatch[1];
+
+
+        return (
+          "https://lh3.googleusercontent.com/d/" +
+          fileId
+        );
+
+      }
+
+
+      /*
+       * If it isn't a Google Drive URL,
+       * use the URL as-is.
+       */
+
+      return url;
+
+    }
+
+
+    /* =========================================================
        LOAD GOOGLE SHEET
-       ========================================= */
+       ========================================================= */
 
     async function loadInventory() {
 
       try {
 
-        const response = await fetch(csvUrl);
+        const response =
+          await fetch(csvUrl);
+
 
         if (!response.ok) {
+
           throw new Error(
             "Unable to load Google Sheet"
           );
+
         }
+
 
         const text =
           await response.text();
 
 
-        /*
-         * Parse CSV
-         *
-         * This handles commas inside
-         * quoted spreadsheet cells better
-         * than a simple split(",").
-         */
-
         const rows =
           parseCSV(text);
 
 
-        const headers =
-          rows.shift();
+        /*
+         * Remove header row
+         */
 
+        rows.shift();
+
+
+        /*
+         * Convert spreadsheet columns
+         *
+         * A = Franchise
+         * B = Scale
+         * C = Name
+         * D = Built
+         * E = Image
+         */
 
         inventory = rows
-    .map(row => {
 
-      let item = {};
+          .map(row => {
 
-      headers.forEach(
-        (header, index) => {
+            return {
 
-          item[header.trim()] =
-            row[index]
-              ? row[index].trim()
-              : "";
+              Franchise:
+                row[0]
+                  ? row[0].trim()
+                  : "",
 
-        }
-      );
+              Scale:
+                row[1]
+                  ? row[1].trim()
+                  : "",
 
-      return item;
+              Name:
+                row[2]
+                  ? row[2].trim()
+                  : "",
 
-    })
-    .filter(item => item.Name && item.Name.trim() !== "");
+              Built:
+                row[3]
+                  ? row[3].trim()
+                  : "",
+
+              Image:
+                row[4]
+                  ? row[4].trim()
+                  : ""
+
+            };
+
+          })
+
+
+          /*
+           * Ignore completely blank rows
+           */
+
+          .filter(item =>
+            item.Name !== ""
+          );
 
 
         populateFilters();
@@ -378,10 +833,11 @@
 
       }
 
+
       catch (error) {
 
         console.error(
-          "Error loading inventory:",
+          "Error loading Gundam inventory:",
           error
         );
 
@@ -396,9 +852,8 @@
 
             <br><br>
 
-            Check that your Google Sheet
-            is published and that the CSV URL
-            is correct.
+            Check that the Google Sheet
+            is published to the web.
 
           </div>
 
@@ -409,311 +864,153 @@
     }
 
 
-    /* =========================================
-       CSV PARSER
-       ========================================= */
-
-    function parseCSV(text) {
-
-      const rows = [];
-
-      let row = [];
-
-      let value = "";
-
-      let insideQuotes = false;
-
-
-      for (
-        let i = 0;
-        i < text.length;
-        i++
-      ) {
-
-        const char =
-          text[i];
-
-        const nextChar =
-          text[i + 1];
-
-
-        /*
-         * Handle quotation marks
-         */
-
-        if (
-          char === '"' &&
-          insideQuotes &&
-          nextChar === '"'
-        ) {
-
-          value += '"';
-
-          i++;
-
-        }
-
-        else if (
-          char === '"'
-        ) {
-
-          insideQuotes =
-            !insideQuotes;
-
-        }
-
-
-        /*
-         * Handle commas
-         */
-
-        else if (
-          char === "," &&
-          !insideQuotes
-        ) {
-
-          row.push(value);
-
-          value = "";
-
-        }
-
-
-        /*
-         * Handle new lines
-         */
-
-        else if (
-          (char === "\n" ||
-           char === "\r") &&
-          !insideQuotes
-        ) {
-
-          if (
-            char === "\r" &&
-            nextChar === "\n"
-          ) {
-
-            i++;
-
-          }
-
-
-          row.push(value);
-
-          value = "";
-
-
-          if (row.length > 1 ||
-              row[0] !== "") {
-
-            rows.push(row);
-
-          }
-
-
-          row = [];
-
-        }
-
-        else {
-
-          value += char;
-
-        }
-
-      }
-
-
-      /*
-       * Add final row
-       */
-
-      if (value.length > 0 ||
-          row.length > 0) {
-
-        row.push(value);
-
-        rows.push(row);
-
-      }
-
-
-      return rows;
-
-    }
-
-
-    /* =========================================
-       GOOGLE DRIVE IMAGE CONVERTER
-       ========================================= */
-
-    function getImageUrl(url) {
-
-      if (!url) {
-        return "";
-      }
-
-
-      /*
-       * Already using the working
-       * Google image format
-       */
-
-      if (
-        url.includes(
-          "lh3.googleusercontent.com/d/"
-        )
-      ) {
-
-        return url;
-
-      }
-
-
-      /*
-       * Standard Google Drive URL
-       *
-       * /file/d/FILE_ID/view
-       */
-
-      let match =
-        url.match(
-          /drive\.google\.com\/file\/d\/([^\/]+)/
-        );
-
-
-      if (match) {
-
-        return (
-          "https://lh3.googleusercontent.com/d/"
-          + match[1]
-        );
-
-      }
-
-
-      /*
-       * Google Drive URL
-       *
-       * ?id=FILE_ID
-       */
-
-      match =
-        url.match(
-          /[?&]id=([^&]+)/
-        );
-
-
-      if (match) {
-
-        return (
-          "https://lh3.googleusercontent.com/d/"
-          + match[1]
-        );
-
-      }
-
-
-      /*
-       * If it isn't a recognized
-       * Google Drive URL, return
-       * the original URL.
-       */
-
-      return url;
-
-    }
-
-
-    /* =========================================
-       POPULATE FILTERS
-       ========================================= */
+    /* =========================================================
+       POPULATE FILTER DROPDOWNS
+       ========================================================= */
 
     function populateFilters() {
 
-  const franchiseFilter =
-    document.getElementById("franchiseFilter");
-
-  const scaleFilter =
-    document.getElementById("scaleFilter");
-
-
-  // Clear existing options
-  franchiseFilter.innerHTML =
-    '<option value="">All Franchises</option>';
-
-  scaleFilter.innerHTML =
-    '<option value="">All Scales</option>';
+      const franchiseFilter =
+        document.getElementById(
+          "franchiseFilter"
+        );
 
 
-  // Get unique franchises
-  const franchises = [
-    ...new Set(
-      inventory
-        .map(item => item.Franchise)
-        .filter(value => value && value.trim() !== "")
-    )
-  ].sort();
+      const scaleFilter =
+        document.getElementById(
+          "scaleFilter"
+        );
 
 
-  // Get unique scales
-  const scales = [
-    ...new Set(
-      inventory
-        .map(item => item.Scale)
-        .filter(value => value && value.trim() !== "")
-    )
-  ].sort();
+      /*
+       * Reset filters
+       */
+
+      franchiseFilter.innerHTML =
+        '<option value="">All Franchises</option>';
 
 
-  // Add franchise options
-  franchises.forEach(franchise => {
-
-    const option =
-      document.createElement("option");
-
-    option.value = franchise;
-    option.textContent = franchise;
-
-    franchiseFilter.appendChild(option);
-
-  });
+      scaleFilter.innerHTML =
+        '<option value="">All Scales</option>';
 
 
-  // Add scale options
-  scales.forEach(scale => {
+      /*
+       * Get unique franchises
+       */
 
-    const option =
-      document.createElement("option");
+      const franchises = [
+        ...new Set(
 
-    option.value = scale;
-    option.textContent = scale;
+          inventory
 
-    scaleFilter.appendChild(option);
+            .map(item =>
+              item.Franchise
+            )
 
-  });
+            .filter(value =>
+              value !== ""
+            )
 
-}
+        )
+      ].sort();
 
 
-    /* =========================================
+      /*
+       * Get unique scales
+       */
+
+      const scales = [
+        ...new Set(
+
+          inventory
+
+            .map(item =>
+              item.Scale
+            )
+
+            .filter(value =>
+              value !== ""
+            )
+
+        )
+      ].sort();
+
+
+      /*
+       * Add franchise options
+       */
+
+      franchises.forEach(
+        franchise => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            franchise;
+
+
+          option.textContent =
+            franchise;
+
+
+          franchiseFilter.appendChild(
+            option
+          );
+
+        }
+      );
+
+
+      /*
+       * Add scale options
+       */
+
+      scales.forEach(
+        scale => {
+
+          const option =
+            document.createElement(
+              "option"
+            );
+
+
+          option.value =
+            scale;
+
+
+          option.textContent =
+            scale;
+
+
+          scaleFilter.appendChild(
+            option
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =========================================================
        UPDATE STATISTICS
-       ========================================= */
+       ========================================================= */
 
     function updateStats(items) {
 
       const total =
-  items.filter(item => item.Name).length;
+        items.length;
 
 
       const built =
         items.filter(
           item =>
-            item.Name &&
-            String(item.Built)
-              .toLowerCase()
-              === "yes"
+            item.Built.toLowerCase() ===
+            "yes"
         ).length;
 
 
@@ -730,69 +1027,66 @@
 
 
       document.getElementById(
-        "totalModels"
-      ).textContent =
-        total;
+        "totalKits"
+      ).textContent = total;
 
 
       document.getElementById(
-        "totalBuilt"
-      ).textContent =
-        built;
+        "builtKits"
+      ).textContent = built;
 
 
       document.getElementById(
-        "totalUnbuilt"
-      ).textContent =
-        unbuilt;
+        "unbuiltKits"
+      ).textContent = unbuilt;
 
 
       document.getElementById(
-        "buildPercentage"
+        "buildPercent"
       ).textContent =
         percentage + "%";
 
     }
 
 
-    /* =========================================
+    /* =========================================================
        RENDER INVENTORY
-       ========================================= */
+       ========================================================= */
 
     function renderInventory() {
 
       const search =
-        document.getElementById(
-          "searchBox"
-        ).value
-          .toLowerCase();
+        document
+          .getElementById(
+            "searchBox"
+          )
+          .value
+          .toLowerCase()
+          .trim();
 
 
       const franchise =
-        document.getElementById(
-          "franchiseFilter"
-        ).value;
+        document
+          .getElementById(
+            "franchiseFilter"
+          )
+          .value;
 
 
       const scale =
-        document.getElementById(
-          "scaleFilter"
-        ).value;
+        document
+          .getElementById(
+            "scaleFilter"
+          )
+          .value;
 
 
-      const built =
-        document.getElementById(
-          "builtFilter"
-        ).value;
-
-
-      const container =
-        document.getElementById(
-          "inventory"
-        );
-
-
-      container.innerHTML = "";
+      const builtFilter =
+        document
+          .getElementById(
+            "builtFilter"
+          )
+          .value;
 
 
       /*
@@ -802,43 +1096,57 @@
       const filtered =
         inventory.filter(item => {
 
-          const name =
-            (item.Name || "")
+          const matchesSearch =
+
+            !search ||
+
+            item.Name
+              .toLowerCase()
+              .includes(search);
+
+
+          const matchesFranchise =
+
+            !franchise ||
+
+            item.Franchise ===
+            franchise;
+
+
+          const matchesScale =
+
+            !scale ||
+
+            item.Scale ===
+            scale;
+
+
+          const builtValue =
+            item.Built
               .toLowerCase();
 
 
-          const itemBuilt =
-            String(item.Built || "")
-              .trim();
+          const matchesBuilt =
+
+            !builtFilter ||
+
+            (
+              builtFilter === "yes" &&
+              builtValue === "yes"
+            ) ||
+
+            (
+              builtFilter === "no" &&
+              builtValue !== "yes"
+            );
 
 
           return (
 
-            (
-              !search ||
-              name.includes(search)
-            )
-
-            &&
-
-            (
-              !franchise ||
-              item.Franchise === franchise
-            )
-
-            &&
-
-            (
-              !scale ||
-              item.Scale === scale
-            )
-
-            &&
-
-            (
-              !built ||
-              itemBuilt === built
-            )
+            matchesSearch &&
+            matchesFranchise &&
+            matchesScale &&
+            matchesBuilt
 
           );
 
@@ -850,6 +1158,19 @@
        */
 
       updateStats(filtered);
+
+
+      /*
+       * Display cards
+       */
+
+      const container =
+        document.getElementById(
+          "inventory"
+        );
+
+
+      container.innerHTML = "";
 
 
       /*
@@ -877,135 +1198,292 @@
        * Create cards
        */
 
-      filtered.forEach(
-        item => {
+      filtered.forEach(item => {
 
-          const card =
-            document.createElement(
-              "div"
-            );
-
-
-          card.className =
-            "card";
+        const card =
+          document.createElement(
+            "div"
+          );
 
 
-          /*
-           * Image
-           */
-
-          const imageUrl =
-            getImageUrl(
-              item.Image
-            );
+        card.className =
+          "card";
 
 
-          /*
-           * Built status
-           */
+        /*
+         * Convert image URL
+         */
 
-          const built =
-            String(
-              item.Built || ""
-            ).trim();
-
-
-          const isBuilt =
-            built.toLowerCase()
-              === "yes";
+        const imageUrl =
+          convertImageUrl(
+            item.Image
+          );
 
 
-          const builtClass =
-            isBuilt
-              ? "built-yes"
-              : "built-no";
+        /*
+         * Image HTML
+         */
+
+        let imageHTML = "";
 
 
-          const builtText =
-            isBuilt
-              ? "Built"
-              : "Unbuilt";
+        if (imageUrl) {
 
+          imageHTML = `
 
-          /*
-           * Card HTML
-           */
+            <img
 
-          card.innerHTML = `
+              class="mini-image"
 
-            ${
-              imageUrl
-                ? `
+              src="${imageUrl}"
 
-                  <a
-                    href="${imageUrl}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
+              alt="${escapeHTML(
+                item.Name
+              )}"
 
-                    <img
-                      class="mini-image"
-                      src="${imageUrl}"
-                      alt="${item.Name || "Gundam"}"
-                      onerror="
-                        this.style.display='none';
-                      "
-                    >
+              data-full-image="${imageUrl}"
 
-                  </a>
+              onerror="this.style.display='none'"
 
-                `
-                : ""
-            }
-
-
-            <div class="model-name">
-
-              ${item.Name || "Unnamed Model"}
-
-            </div>
-
-
-            <div class="meta">
-
-              Franchise:
-              ${item.Franchise || "Unknown"}
-
-            </div>
-
-
-            <div class="meta">
-
-              Scale:
-              ${item.Scale || "Unknown"}
-
-            </div>
-
-
-            <div
-              class="built ${builtClass}"
             >
 
-              ${builtText}
+          `;
+
+        }
+
+        else {
+
+          imageHTML = `
+
+            <div class="no-image">
+
+              No Image
 
             </div>
 
           `;
 
+        }
 
-          container.appendChild(
-            card
+
+        /*
+         * Built status
+         */
+
+        const isBuilt =
+          item.Built
+            .toLowerCase() ===
+          "yes";
+
+
+        const builtHTML = isBuilt
+
+          ? `
+
+              <div class="built built-yes">
+
+                Built
+
+              </div>
+
+            `
+
+          : `
+
+              <div class="built built-no">
+
+                Unbuilt
+
+              </div>
+
+            `;
+
+
+        /*
+         * Build card
+         */
+
+        card.innerHTML = `
+
+          ${imageHTML}
+
+
+          <div class="unit">
+
+            ${escapeHTML(
+              item.Name
+            )}
+
+          </div>
+
+
+          <div class="meta">
+
+            Franchise:
+            ${escapeHTML(
+              item.Franchise ||
+              "Unknown"
+            )}
+
+          </div>
+
+
+          <div class="meta">
+
+            Scale:
+            ${escapeHTML(
+              item.Scale ||
+              "Unknown"
+            )}
+
+          </div>
+
+
+          ${builtHTML}
+
+        `;
+
+
+        /*
+         * Make image clickable
+         */
+
+        const image =
+          card.querySelector(
+            ".mini-image"
+          );
+
+
+        if (image) {
+
+          image.addEventListener(
+            "click",
+            function() {
+
+              openImage(
+                this.dataset.fullImage,
+                item.Name
+              );
+
+            }
           );
 
         }
+
+
+        container.appendChild(
+          card
+        );
+
+      });
+
+    }
+
+
+    /* =========================================================
+       ESCAPE HTML
+       ========================================================= */
+
+    function escapeHTML(value) {
+
+      return String(value)
+
+        .replace(
+          /&/g,
+          "&amp;"
+        )
+
+        .replace(
+          /</g,
+          "&lt;"
+        )
+
+        .replace(
+          />/g,
+          "&gt;"
+        )
+
+        .replace(
+          /"/g,
+          "&quot;"
+        )
+
+        .replace(
+          /'/g,
+          "&#039;"
+        );
+
+    }
+
+
+    /* =========================================================
+       OPEN FULL SIZE IMAGE
+       ========================================================= */
+
+    function openImage(
+      imageUrl,
+      name
+    ) {
+
+      const modal =
+        document.getElementById(
+          "imageModal"
+        );
+
+
+      const modalImage =
+        document.getElementById(
+          "modalImage"
+        );
+
+
+      modalImage.src =
+        imageUrl;
+
+
+      modalImage.alt =
+        name;
+
+
+      modal.classList.add(
+        "show"
       );
 
     }
 
 
-    /* =========================================
+    /* =========================================================
+       CLOSE IMAGE MODAL
+       ========================================================= */
+
+    function closeImage() {
+
+      const modal =
+        document.getElementById(
+          "imageModal"
+        );
+
+
+      const modalImage =
+        document.getElementById(
+          "modalImage"
+        );
+
+
+      modal.classList.remove(
+        "show"
+      );
+
+
+      modalImage.src =
+        "";
+
+    }
+
+
+    /* =========================================================
        EVENT LISTENERS
-       ========================================= */
+       ========================================================= */
 
     document
       .getElementById(
@@ -1047,13 +1525,71 @@
       );
 
 
-    /* =========================================
+    document
+      .getElementById(
+        "closeModal"
+      )
+      .addEventListener(
+        "click",
+        closeImage
+      );
+
+
+    /*
+     * Clicking outside the image
+     * also closes the modal.
+     */
+
+    document
+      .getElementById(
+        "imageModal"
+      )
+      .addEventListener(
+        "click",
+        function(event) {
+
+          if (
+            event.target === this
+          ) {
+
+            closeImage();
+
+          }
+
+        }
+      );
+
+
+    /*
+     * ESC key closes the image
+     */
+
+    document.addEventListener(
+      "keydown",
+      function(event) {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeImage();
+
+        }
+
+      }
+    );
+
+
+    /* =========================================================
        START
-       ========================================= */
+       ========================================================= */
 
     loadInventory();
 
+
   </script>
 
+
 </body>
+
 </html>
