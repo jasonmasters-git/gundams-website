@@ -320,66 +320,95 @@
 
     async function loadInventory() {
 
-  try {
+      try {
 
-    const response = await fetch(csvUrl);
+        const response = await fetch(csvUrl);
 
-    if (!response.ok) {
-      throw new Error("Unable to load Google Sheet");
+        if (!response.ok) {
+          throw new Error(
+            "Unable to load Google Sheet"
+          );
+        }
+
+        const text =
+          await response.text();
+
+
+        /*
+         * Parse CSV
+         *
+         * This handles commas inside
+         * quoted spreadsheet cells better
+         * than a simple split(",").
+         */
+
+        const rows =
+          parseCSV(text);
+
+
+        const headers =
+          rows.shift();
+
+
+        inventory =
+  rows
+    .map(row => {
+
+      let item = {};
+
+      headers.forEach(
+        (header, index) => {
+
+          item[header.trim()] =
+            row[index]
+              ? row[index].trim()
+              : "";
+
+        }
+      );
+
+      return item;
+
+    })
+    .filter(item => item.Name && item.Name.trim() !== "");
+
+
+        populateFilters();
+
+        renderInventory();
+
+      }
+
+      catch (error) {
+
+        console.error(
+          "Error loading inventory:",
+          error
+        );
+
+
+        document.getElementById(
+          "inventory"
+        ).innerHTML = `
+
+          <div class="no-results">
+
+            Unable to load the Gundam inventory.
+
+            <br><br>
+
+            Check that your Google Sheet
+            is published and that the CSV URL
+            is correct.
+
+          </div>
+
+        `;
+
+      }
+
     }
 
-    const text = await response.text();
-
-    const rows = parseCSV(text);
-
-    // Remove header row
-    rows.shift();
-
-    inventory = rows
-      .map(row => {
-
-        return {
-          Franchise: row[0] ? row[0].trim() : "",
-          Scale: row[1] ? row[1].trim() : "",
-          Name: row[2] ? row[2].trim() : "",
-          Built: row[3] ? row[3].trim() : "",
-          Image: row[4] ? row[4].trim() : ""
-        };
-
-      })
-      .filter(item => item.Name !== "");
-
-    populateFilters();
-    renderInventory();
-
-  }
-
-  catch (error) {
-
-    console.error(
-      "Error loading inventory:",
-      error
-    );
-
-    document.getElementById("inventory").innerHTML = `
-
-      <div class="no-results">
-
-        Unable to load the Gundam inventory.
-
-        <br><br>
-
-        Check that your Google Sheet
-        is published and that the CSV URL
-        is correct.
-
-      </div>
-
-    `;
-
-  }
-
-}
 
     /* =========================================
        CSV PARSER
