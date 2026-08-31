@@ -350,27 +350,19 @@
           rows.shift();
 
 
-        inventory =
-  rows
-    .map(row => {
+         inventory = rows
+      .map(row => {
 
-      let item = {};
+        return {
+          Franchise: row[0] ? row[0].trim() : "",
+          Scale: row[1] ? row[1].trim() : "",
+          Name: row[2] ? row[2].trim() : "",
+          Built: row[3] ? row[3].trim() : "",
+          Image: row[4] ? row[4].trim() : ""
+        };
 
-      headers.forEach(
-        (header, index) => {
-
-          item[header.trim()] =
-            row[index]
-              ? row[index].trim()
-              : "";
-
-        }
-      );
-
-      return item;
-
-    })
-    .filter(item => item.Name && item.Name.trim() !== "");
+      })
+      .filter(item => item.Name !== "");
 
 
         populateFilters();
