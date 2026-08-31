@@ -731,12 +731,13 @@
     function updateStats(items) {
 
       const total =
-        items.length;
+  items.filter(item => item.Name).length;
 
 
       const built =
         items.filter(
           item =>
+            item.Name &&
             String(item.Built)
               .toLowerCase()
               === "yes"
