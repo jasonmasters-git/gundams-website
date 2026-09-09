@@ -1,11 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Gundam Collection</title>
 
@@ -18,11 +15,14 @@
     body {
       font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: #f4f4f4;
-      color: #222;
+      padding: 0;
+      background: #f5f5f5;
+      color: #111;
     }
 
+    .container {
+      padding: 20px;
+    }
 
     h1 {
       margin-top: 0;
@@ -31,7 +31,7 @@
 
 
     /* =========================
-       CONTROLS
+       FILTERS
        ========================= */
 
     .controls {
@@ -41,7 +41,6 @@
       margin-bottom: 20px;
     }
 
-
     input,
     select {
       padding: 10px;
@@ -50,7 +49,6 @@
       border-radius: 6px;
       background: white;
     }
-
 
     #searchBox {
       width: 230px;
@@ -63,32 +61,24 @@
 
     .stats {
       display: grid;
-      grid-template-columns:
-        repeat(auto-fit, minmax(160px, 1fr));
-
+      grid-template-columns: repeat(4, 1fr);
       gap: 15px;
       margin-bottom: 25px;
     }
 
-
     .stat {
       background: white;
-      padding: 15px;
       border-radius: 10px;
-
-      box-shadow:
-        0 2px 8px rgba(0,0,0,0.10);
-
+      padding: 15px;
       text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.10);
     }
-
 
     .stat-label {
       font-size: 14px;
-      color: #666;
+      color: #555;
       margin-bottom: 8px;
     }
-
 
     .stat-value {
       font-size: 28px;
@@ -97,69 +87,70 @@
 
 
     /* =========================
-       INVENTORY GRID
+       GUNDAM GRID
        ========================= */
 
     .grid {
       display: grid;
-
-      grid-template-columns:
-        repeat(auto-fill, minmax(260px, 1fr));
-
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 16px;
     }
 
 
     /* =========================
-       MODEL CARD
+       GUNDAM CARD
        ========================= */
 
     .card {
       background: white;
-
       border-radius: 10px;
-
       padding: 16px;
-
-      box-shadow:
-        0 2px 8px rgba(0,0,0,0.10);
-
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
       overflow: hidden;
     }
 
-
     .unit {
-      font-size: 19px;
+      font-size: 20px;
       font-weight: bold;
       margin-bottom: 8px;
     }
 
-
     .meta {
       color: #555;
       margin: 5px 0;
+      font-size: 14px;
     }
-
-   
 
 
     /* =========================
-       BUILT STATUS
+       DESCRIPTION
+       ========================= */
+
+    .description {
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+
+      font-size: 14px;
+      line-height: 1.5;
+      color: #555;
+    }
+
+
+    /* =========================
+       BUILD STATUS
        ========================= */
 
     .built {
       margin-top: 12px;
       font-weight: bold;
+      color: #087a2a;
     }
 
-
-    .built-yes {
-      color: #16823b;
-    }
-
-
-    .built-no {
-      color: #c62828;
+    .unbuilt {
+      margin-top: 12px;
+      font-weight: bold;
+      color: #d00000;
     }
 
 
@@ -168,10 +159,8 @@
        ========================= */
 
     .mini-image {
-      display: block;
-
       width: 100%;
-      height: 260px;
+      height: 250px;
 
       object-fit: cover;
 
@@ -181,59 +170,28 @@
 
       cursor: pointer;
 
-      transition:
-        transform 0.2s ease,
-        opacity 0.2s ease;
+      transition: transform 0.2s ease;
     }
-
 
     .mini-image:hover {
       transform: scale(1.02);
-      opacity: 0.9;
     }
-
-
-    /* =========================
-       NO IMAGE
-       ========================= */
 
     .no-image {
       width: 100%;
-      height: 260px;
+      height: 250px;
 
       display: flex;
-
       align-items: center;
       justify-content: center;
 
-      background: #eeeeee;
+      background: #eee;
+
+      color: #999;
 
       border-radius: 8px;
 
       margin-bottom: 12px;
-
-      color: #999;
-
-      font-size: 14px;
-    }
-
-
-    /* =========================
-       NO RESULTS
-       ========================= */
-
-    .no-results {
-      grid-column: 1 / -1;
-
-      text-align: center;
-
-      padding: 40px;
-
-      color: #777;
-
-      background: white;
-
-      border-radius: 10px;
     }
 
 
@@ -264,21 +222,14 @@
       box-sizing: border-box;
     }
 
-
-    .modal.show {
-      display: flex;
-    }
-
-
-    .modal-image {
+    .modal img {
       max-width: 95%;
-      max-height: 90vh;
+      max-height: 95%;
 
       object-fit: contain;
 
       border-radius: 8px;
     }
-
 
     .close {
       position: absolute;
@@ -290,63 +241,51 @@
 
       font-size: 40px;
 
-      font-weight: bold;
-
       cursor: pointer;
 
-      line-height: 1;
-    }
-
-
-    .close:hover {
-      color: #ccc;
+      font-weight: bold;
     }
 
 
     /* =========================
-       MOBILE
+       RESPONSIVE
        ========================= */
 
-    @media (max-width: 600px) {
+    @media (max-width: 800px) {
 
-      body {
-        padding: 12px;
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
       }
 
+    }
+
+    @media (max-width: 500px) {
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
 
       #searchBox {
         width: 100%;
-        box-sizing: border-box;
       }
-
 
       .controls {
         flex-direction: column;
       }
 
-
       select {
         width: 100%;
-      }
-
-
-      .grid {
-        grid-template-columns: 1fr;
       }
 
     }
 
   </style>
-
 </head>
 
 
 <body>
 
-
-  <!-- =========================
-       TITLE
-       ========================= -->
+<div class="container">
 
   <h1>Gundam Collection</h1>
 
@@ -363,39 +302,18 @@
       placeholder="Search Gundams..."
     >
 
-
     <select id="franchiseFilter">
-
-      <option value="">
-        All Franchises
-      </option>
-
+      <option value="">All Franchises</option>
     </select>
-
 
     <select id="scaleFilter">
-
-      <option value="">
-        All Scales
-      </option>
-
+      <option value="">All Scales</option>
     </select>
 
-
     <select id="builtFilter">
-
-      <option value="">
-        All Models
-      </option>
-
-      <option value="yes">
-        Built
-      </option>
-
-      <option value="no">
-        Unbuilt
-      </option>
-
+      <option value="">All Models</option>
+      <option value="Yes">Built</option>
+      <option value="No">Unbuilt</option>
     </select>
 
   </div>
@@ -430,7 +348,7 @@
       </div>
 
       <div
-        id="builtKits"
+        id="totalBuilt"
         class="stat-value"
       >
         0
@@ -446,7 +364,7 @@
       </div>
 
       <div
-        id="unbuiltKits"
+        id="totalUnbuilt"
         class="stat-value"
       >
         0
@@ -462,7 +380,7 @@
       </div>
 
       <div
-        id="buildPercent"
+        id="buildPercentage"
         class="stat-value"
       >
         0%
@@ -482,1117 +400,614 @@
     class="grid"
   ></div>
 
+</div>
 
-  <!-- =========================
-       IMAGE MODAL
-       ========================= -->
 
-  <div
-    id="imageModal"
-    class="modal"
+<!-- =========================
+     IMAGE MODAL
+     ========================= -->
+
+<div
+  id="imageModal"
+  class="modal"
+>
+
+  <span
+    id="closeModal"
+    class="close"
+  >
+    &times;
+  </span>
+
+  <img
+    id="modalImage"
+    src=""
+    alt="Full size Gundam"
   >
 
-    <span
-      id="closeModal"
-      class="close"
-    >
-      &times;
-    </span>
+</div>
 
 
-    <img
-      id="modalImage"
-      class="modal-image"
-      src=""
-      alt="Full size Gundam"
-    >
+<script>
 
-  </div>
+  /* =========================
+     GOOGLE SHEETS
+     ========================= */
 
-
-  <script>
+  const csvUrl =
+    "https://docs.google.com/spreadsheets/d/e/2PACX-1vQp4lE0UwI-5wQSvnH09swpvvmm_lPQ4g34hb717wIRx_r9zEncqzzHt8jwyQIoJIoAzI0OUWjaigN3/pub?gid=0&single=true&output=csv";
 
 
-    /* =========================================================
-       GOOGLE SHEET
-       ========================================================= */
-
-    const csvUrl =
-      "https://docs.google.com/spreadsheets/d/e/2PACX-1vQp4lE0UwI-5wQSvnH09swpvvmm_lPQ4g34hb717wIRx_r9zEncqzzHt8jwyQIoJIoAzI0OUWjaigN3/pub?gid=0&single=true&output=csv";
+  let inventory = [];
 
 
-    let inventory = [];
+  /* =========================
+     LOAD SPREADSHEET
+     ========================= */
+
+  async function loadInventory() {
+
+    try {
+
+      const response = await fetch(csvUrl);
+
+      if (!response.ok) {
+        throw new Error("Could not load Google Sheet");
+      }
+
+      const text = await response.text();
 
 
-    /* =========================================================
-       CSV PARSER
-       
-       This handles commas inside quoted spreadsheet cells.
-       ========================================================= */
+      /*
+       * Parse CSV correctly.
+       * This is important because descriptions
+       * can contain commas.
+       */
 
-    function parseCSV(text) {
-
-      const rows = [];
-
-      let row = [];
-
-      let cell = "";
-
-      let insideQuotes = false;
+      const rows = parseCSV(text);
 
 
-      for (let i = 0; i < text.length; i++) {
-
-        const character = text[i];
-
-        const nextCharacter =
-          text[i + 1];
+      const headers = rows.shift();
 
 
-        /* Handle escaped quotes */
+      inventory = rows.map(row => {
 
-        if (
-          character === '"' &&
-          insideQuotes &&
-          nextCharacter === '"'
-        ) {
+        let item = {};
 
-          cell += '"';
+        headers.forEach((header, index) => {
 
-          i++;
+          item[header.trim()] =
+            row[index] ? row[index].trim() : "";
 
-          continue;
+        });
 
-        }
+        return item;
 
-
-        /* Start/end quotes */
-
-        if (character === '"') {
-
-          insideQuotes =
-            !insideQuotes;
-
-          continue;
-
-        }
+      });
 
 
-        /* Comma = next cell */
+      populateFilters();
 
-        if (
-          character === "," &&
-          !insideQuotes
-        ) {
+      renderInventory();
 
-          row.push(cell);
+    }
 
-          cell = "";
+    catch (error) {
 
-          continue;
+      console.error(error);
 
-        }
+      document.getElementById("inventory").innerHTML = `
+        <p>
+          Unable to load the Gundam collection.
+        </p>
+      `;
 
+    }
 
-        /* New line = next row */
-
-        if (
-          (character === "\n" ||
-           character === "\r") &&
-          !insideQuotes
-        ) {
-
-          if (
-            character === "\r" &&
-            nextCharacter === "\n"
-          ) {
-
-            i++;
-
-          }
+  }
 
 
-          row.push(cell);
+  /* =========================
+     CSV PARSER
+     ========================= */
 
-          rows.push(row);
+  function parseCSV(text) {
+
+    const rows = [];
+
+    let row = [];
+
+    let cell = "";
+
+    let insideQuotes = false;
 
 
-          row = [];
+    for (let i = 0; i < text.length; i++) {
 
-          cell = "";
+      const char = text[i];
 
-          continue;
-
-        }
+      const next = text[i + 1];
 
 
-        cell += character;
+      if (char === '"' && insideQuotes && next === '"') {
+
+        cell += '"';
+
+        i++;
 
       }
 
+      else if (char === '"') {
 
-      /* Add final cell */
+        insideQuotes = !insideQuotes;
 
-      if (cell !== "" || row.length > 0) {
+      }
+
+      else if (char === ',' && !insideQuotes) {
+
+        row.push(cell);
+
+        cell = "";
+
+      }
+
+      else if (
+        (char === '\n' || char === '\r') &&
+        !insideQuotes
+      ) {
+
+        if (char === '\r' && next === '\n') {
+          i++;
+        }
 
         row.push(cell);
 
         rows.push(row);
 
-      }
+        row = [];
 
-
-      return rows;
-
-    }
-
-
-    /* =========================================================
-       CONVERT GOOGLE DRIVE LINKS
-       ========================================================= */
-
-    function convertImageUrl(url) {
-
-      if (!url) {
-        return "";
-      }
-
-
-      url = url.trim();
-
-
-      /*
-       * Already using lh3.googleusercontent.com
-       */
-
-      if (
-        url.includes(
-          "lh3.googleusercontent.com"
-        )
-      ) {
-
-        return url;
+        cell = "";
 
       }
 
+      else {
 
-      /*
-       * Google Drive:
-       *
-       * https://drive.google.com/file/d/FILE_ID/view
-       */
-
-      const driveMatch =
-        url.match(
-          /drive\.google\.com\/file\/d\/([^\/]+)/
-        );
-
-
-      if (driveMatch) {
-
-        const fileId =
-          driveMatch[1];
-
-
-        return (
-          "https://lh3.googleusercontent.com/d/" +
-          fileId
-        );
-
-      }
-
-
-      /*
-       * Google Drive:
-       *
-       * https://drive.google.com/uc?id=FILE_ID
-       */
-
-      const ucMatch =
-        url.match(
-          /drive\.google\.com\/.*[?&]id=([^&]+)/
-        );
-
-
-      if (ucMatch) {
-
-        const fileId =
-          ucMatch[1];
-
-
-        return (
-          "https://lh3.googleusercontent.com/d/" +
-          fileId
-        );
-
-      }
-
-
-      /*
-       * If it isn't a Google Drive URL,
-       * use the URL as-is.
-       */
-
-      return url;
-
-    }
-
-
-    /* =========================================================
-       LOAD GOOGLE SHEET
-       ========================================================= */
-
-    async function loadInventory() {
-
-      try {
-
-        const response =
-          await fetch(csvUrl);
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "Unable to load Google Sheet"
-          );
-
-        }
-
-
-        const text =
-          await response.text();
-
-
-        const rows =
-          parseCSV(text);
-
-
-        /*
-         * Remove header row
-         */
-
-        rows.shift();
-
-
-        /*
-         * Convert spreadsheet columns
-         *
-         * A = Franchise
-         * B = Scale
-         * C = Name
-         * D = Built
-         * E = Image
-         */
-
-        inventory = rows
-
-          .map(row => {
-
-            return {
-
-              Franchise:
-                row[0]
-                  ? row[0].trim()
-                  : "",
-
-              Scale:
-                row[1]
-                  ? row[1].trim()
-                  : "",
-
-              Name:
-                row[2]
-                  ? row[2].trim()
-                  : "",
-
-              Built:
-                row[3]
-                  ? row[3].trim()
-                  : "",
-
-              Image:
-                row[4]
-                  ? row[4].trim()
-                  : ""
-
-            };
-
-          })
-
-
-          /*
-           * Ignore completely blank rows
-           */
-
-          .filter(item =>
-            item.Name !== ""
-          );
-
-
-        populateFilters();
-
-        renderInventory();
-
-      }
-
-
-      catch (error) {
-
-        console.error(
-          "Error loading Gundam inventory:",
-          error
-        );
-
-
-        document.getElementById(
-          "inventory"
-        ).innerHTML = `
-
-          <div class="no-results">
-
-            Unable to load the Gundam inventory.
-
-            <br><br>
-
-            Check that the Google Sheet
-            is published to the web.
-
-          </div>
-
-        `;
+        cell += char;
 
       }
 
     }
 
 
-    /* =========================================================
-       POPULATE FILTER DROPDOWNS
-       ========================================================= */
+    if (cell !== "" || row.length > 0) {
 
-    function populateFilters() {
+      row.push(cell);
 
-      const franchiseFilter =
-        document.getElementById(
-          "franchiseFilter"
-        );
-
-
-      const scaleFilter =
-        document.getElementById(
-          "scaleFilter"
-        );
-
-
-      /*
-       * Reset filters
-       */
-
-      franchiseFilter.innerHTML =
-        '<option value="">All Franchises</option>';
-
-
-      scaleFilter.innerHTML =
-        '<option value="">All Scales</option>';
-
-
-      /*
-       * Get unique franchises
-       */
-
-      const franchises = [
-        ...new Set(
-
-          inventory
-
-            .map(item =>
-              item.Franchise
-            )
-
-            .filter(value =>
-              value !== ""
-            )
-
-        )
-      ].sort();
-
-
-      /*
-       * Get unique scales
-       */
-
-      const scales = [
-        ...new Set(
-
-          inventory
-
-            .map(item =>
-              item.Scale
-            )
-
-            .filter(value =>
-              value !== ""
-            )
-
-        )
-      ].sort();
-
-
-      /*
-       * Add franchise options
-       */
-
-      franchises.forEach(
-        franchise => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            franchise;
-
-
-          option.textContent =
-            franchise;
-
-
-          franchiseFilter.appendChild(
-            option
-          );
-
-        }
-      );
-
-
-      /*
-       * Add scale options
-       */
-
-      scales.forEach(
-        scale => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-
-          option.value =
-            scale;
-
-
-          option.textContent =
-            scale;
-
-
-          scaleFilter.appendChild(
-            option
-          );
-
-        }
-      );
+      rows.push(row);
 
     }
 
 
-    /* =========================================================
-       UPDATE STATISTICS
-       ========================================================= */
+    return rows;
 
-    function updateStats(items) {
-
-      const total =
-        items.length;
+  }
 
 
-      const built =
-        items.filter(
-          item =>
-            item.Built.toLowerCase() ===
-            "yes"
-        ).length;
+  /* =========================
+     FILTER DROPDOWNS
+     ========================= */
+
+  function populateFilters() {
+
+    const franchiseFilter =
+      document.getElementById("franchiseFilter");
+
+    const scaleFilter =
+      document.getElementById("scaleFilter");
 
 
-      const unbuilt =
-        total - built;
+    const franchises = [
+      ...new Set(
+        inventory
+          .map(item => item.Franchise)
+          .filter(Boolean)
+      )
+    ].sort();
 
 
-      const percentage =
-        total > 0
-          ? Math.round(
-              (built / total) * 100
-            )
-          : 0;
+    const scales = [
+      ...new Set(
+        inventory
+          .map(item => item.Scale)
+          .filter(Boolean)
+      )
+    ].sort();
 
 
-      document.getElementById(
-        "totalKits"
-      ).textContent = total;
+    franchises.forEach(franchise => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = franchise;
+
+      option.textContent = franchise;
+
+      franchiseFilter.appendChild(option);
+
+    });
 
 
-      document.getElementById(
-        "builtKits"
-      ).textContent = built;
+    scales.forEach(scale => {
+
+      const option =
+        document.createElement("option");
+
+      option.value = scale;
+
+      option.textContent = scale;
+
+      scaleFilter.appendChild(option);
+
+    });
+
+  }
 
 
-      document.getElementById(
-        "unbuiltKits"
-      ).textContent = unbuilt;
+  /* =========================
+     FILTER INVENTORY
+     ========================= */
+
+  function getFilteredInventory() {
+
+    const search =
+      document
+        .getElementById("searchBox")
+        .value
+        .toLowerCase();
 
 
-      document.getElementById(
-        "buildPercent"
-      ).textContent =
-        percentage + "%";
-
-    }
+    const franchise =
+      document
+        .getElementById("franchiseFilter")
+        .value;
 
 
-    /* =========================================================
-       RENDER INVENTORY
-       ========================================================= */
+    const scale =
+      document
+        .getElementById("scaleFilter")
+        .value;
 
-    function renderInventory() {
 
-      const search =
-        document
-          .getElementById(
-            "searchBox"
-          )
-          .value
+    const built =
+      document
+        .getElementById("builtFilter")
+        .value;
+
+
+    return inventory.filter(item => {
+
+      const matchesSearch =
+        !search ||
+        (item.Name || "")
           .toLowerCase()
-          .trim();
+          .includes(search);
 
 
-      const franchise =
-        document
-          .getElementById(
-            "franchiseFilter"
+      const matchesFranchise =
+        !franchise ||
+        item.Franchise === franchise;
+
+
+      const matchesScale =
+        !scale ||
+        item.Scale === scale;
+
+
+      const matchesBuilt =
+        !built ||
+        item.Built === built;
+
+
+      return (
+        matchesSearch &&
+        matchesFranchise &&
+        matchesScale &&
+        matchesBuilt
+      );
+
+    });
+
+  }
+
+
+  /* =========================
+     UPDATE STATISTICS
+     ========================= */
+
+  function updateStats(items) {
+
+    const totalKits = items.length;
+
+
+    const totalBuilt =
+      items.filter(
+        item => item.Built === "Yes"
+      ).length;
+
+
+    const totalUnbuilt =
+      totalKits - totalBuilt;
+
+
+    const buildPercentage =
+      totalKits > 0
+        ? Math.round(
+            (totalBuilt / totalKits) * 100
           )
-          .value;
+        : 0;
 
 
-      const scale =
-        document
-          .getElementById(
-            "scaleFilter"
-          )
-          .value;
+    document.getElementById("totalKits")
+      .textContent = totalKits;
 
 
-      const builtFilter =
-        document
-          .getElementById(
-            "builtFilter"
-          )
-          .value;
+    document.getElementById("totalBuilt")
+      .textContent = totalBuilt;
 
 
-      /*
-       * Filter inventory
-       */
-
-      const filtered =
-        inventory.filter(item => {
-
-          const matchesSearch =
-
-            !search ||
-
-            item.Name
-              .toLowerCase()
-              .includes(search);
+    document.getElementById("totalUnbuilt")
+      .textContent = totalUnbuilt;
 
 
-          const matchesFranchise =
+    document.getElementById("buildPercentage")
+      .textContent = buildPercentage + "%";
 
-            !franchise ||
-
-            item.Franchise ===
-            franchise;
+  }
 
 
-          const matchesScale =
+  /* =========================
+     DISPLAY INVENTORY
+     ========================= */
 
-            !scale ||
+  function renderInventory() {
 
-            item.Scale ===
-            scale;
-
-
-          const builtValue =
-            item.Built
-              .toLowerCase();
+    const filtered =
+      getFilteredInventory();
 
 
-          const matchesBuilt =
-
-            !builtFilter ||
-
-            (
-              builtFilter === "yes" &&
-              builtValue === "yes"
-            ) ||
-
-            (
-              builtFilter === "no" &&
-              builtValue !== "yes"
-            );
+    updateStats(filtered);
 
 
-          return (
+    const container =
+      document.getElementById("inventory");
 
-            matchesSearch &&
-            matchesFranchise &&
-            matchesScale &&
-            matchesBuilt
 
-          );
+    container.innerHTML = "";
 
-        });
+
+    if (filtered.length === 0) {
+
+      container.innerHTML = `
+        <p>
+          No Gundams match your filters.
+        </p>
+      `;
+
+      return;
+
+    }
+
+
+    filtered.forEach(item => {
+
+      const card =
+        document.createElement("div");
+
+      card.className = "card";
 
 
       /*
-       * Update statistics
+       * IMAGE
        */
 
-      updateStats(filtered);
+      let imageHTML = "";
 
+      if (item.Image) {
 
-      /*
-       * Display cards
-       */
+        imageHTML = `
+          <img
+            class="mini-image"
+            src="${item.Image}"
+            alt="${item.Name || "Gundam"}"
+            onclick="openImage('${item.Image.replace(/'/g, "\\'")}')"
+            onerror="this.parentElement.querySelector('.no-image').style.display='flex'; this.style.display='none';"
+          >
 
-      const container =
-        document.getElementById(
-          "inventory"
-        );
-
-
-      container.innerHTML = "";
-
-
-      /*
-       * No results
-       */
-
-      if (filtered.length === 0) {
-
-        container.innerHTML = `
-
-          <div class="no-results">
-
-            No Gundams match your filters.
-
+          <div
+            class="no-image"
+            style="display:none;"
+          >
+            No Image
           </div>
-
         `;
 
-        return;
+      }
+
+      else {
+
+        imageHTML = `
+          <div class="no-image">
+            No Image
+          </div>
+        `;
 
       }
 
 
       /*
-       * Create cards
+       * DESCRIPTION
        */
 
-      filtered.forEach(item => {
-
-        const card =
-          document.createElement(
-            "div"
-          );
-
-
-        card.className =
-          "card";
-
-
-        /*
-         * Convert image URL
-         */
-
-        const imageUrl =
-          convertImageUrl(
-            item.Image
-          );
-
-
-        /*
-         * Image HTML
-         */
-
-        let imageHTML = "";
-
-
-        if (imageUrl) {
-
-          imageHTML = `
-
-            <img
-
-              class="mini-image"
-
-              src="${imageUrl}"
-
-              alt="${escapeHTML(
-                item.Name
-              )}"
-
-              data-full-image="${imageUrl}"
-
-              onerror="this.style.display='none'"
-
-            >
-
-          `;
-
-        }
-
-        else {
-
-          imageHTML = `
-
-            <div class="no-image">
-
-              No Image
-
-            </div>
-
-          `;
-
-        }
-
-
-        /*
-         * Built status
-         */
-
-        const isBuilt =
-          item.Built
-            .toLowerCase() ===
-          "yes";
-
-
-        const builtHTML = isBuilt
-
+      const descriptionHTML =
+        item.Description
           ? `
+            <div class="description">
+              ${item.Description}
+            </div>
+          `
+          : "";
 
-              <div class="built built-yes">
 
-                Built
+      /*
+       * BUILD STATUS
+       */
 
-              </div>
-
-            `
-
+      const buildStatus =
+        item.Built === "Yes"
+          ? `
+            <div class="built">
+              Built
+            </div>
+          `
           : `
+            <div class="unbuilt">
+              Unbuilt
+            </div>
+          `;
 
-              <div class="built built-no">
 
-                Unbuilt
+      /*
+       * BUILD CARD
+       */
 
-              </div>
+      card.innerHTML = `
 
-            `;
+        ${imageHTML}
 
+        <div class="unit">
+          ${item.Name || "Unnamed Model"}
+        </div>
 
-        /*
-         * Build card
-         */
+        <div class="meta">
+          Franchise:
+          ${item.Franchise || "Unknown"}
+        </div>
 
-        card.innerHTML = `
+        <div class="meta">
+          Scale:
+          ${item.Scale || "Unknown"}
+        </div>
 
-          ${imageHTML}
+        ${descriptionHTML}
 
+        ${buildStatus}
 
-          <div class="unit">
+      `;
 
-            ${escapeHTML(
-              item.Name
-            )}
 
-          </div>
+      container.appendChild(card);
 
+    });
 
-          <div class="meta">
+  }
 
-            Franchise:
-            ${escapeHTML(
-              item.Franchise ||
-              "Unknown"
-            )}
 
-          </div>
+  /* =========================
+     IMAGE MODAL
+     ========================= */
 
+  function openImage(imageURL) {
 
-          <div class="meta">
+    const modal =
+      document.getElementById("imageModal");
 
-            Scale:
-            ${escapeHTML(
-              item.Scale ||
-              "Unknown"
-            )}
+    const modalImage =
+      document.getElementById("modalImage");
 
-          </div>
 
+    modalImage.src = imageURL;
 
-          ${builtHTML}
-          
+    modal.style.display = "flex";
 
-        `;
+  }
 
 
-        /*
-         * Make image clickable
-         */
+  function closeImage() {
 
-        const image =
-          card.querySelector(
-            ".mini-image"
-          );
+    document.getElementById("imageModal")
+      .style.display = "none";
 
+  }
 
-        if (image) {
 
-          image.addEventListener(
-            "click",
-            function() {
+  document
+    .getElementById("closeModal")
+    .addEventListener(
+      "click",
+      closeImage
+    );
 
-              openImage(
-                this.dataset.fullImage,
-                item.Name
-              );
 
-            }
-          );
-
-        }
-
-
-        container.appendChild(
-          card
-        );
-
-      });
-
-    }
-
-
-    /* =========================================================
-       ESCAPE HTML
-       ========================================================= */
-
-    function escapeHTML(value) {
-
-      return String(value)
-
-        .replace(
-          /&/g,
-          "&amp;"
-        )
-
-        .replace(
-          /</g,
-          "&lt;"
-        )
-
-        .replace(
-          />/g,
-          "&gt;"
-        )
-
-        .replace(
-          /"/g,
-          "&quot;"
-        )
-
-        .replace(
-          /'/g,
-          "&#039;"
-        );
-
-    }
-
-
-    /* =========================================================
-       OPEN FULL SIZE IMAGE
-       ========================================================= */
-
-    function openImage(
-      imageUrl,
-      name
-    ) {
-
-      const modal =
-        document.getElementById(
-          "imageModal"
-        );
-
-
-      const modalImage =
-        document.getElementById(
-          "modalImage"
-        );
-
-
-      modalImage.src =
-        imageUrl;
-
-
-      modalImage.alt =
-        name;
-
-
-      modal.classList.add(
-        "show"
-      );
-
-    }
-
-
-    /* =========================================================
-       CLOSE IMAGE MODAL
-       ========================================================= */
-
-    function closeImage() {
-
-      const modal =
-        document.getElementById(
-          "imageModal"
-        );
-
-
-      const modalImage =
-        document.getElementById(
-          "modalImage"
-        );
-
-
-      modal.classList.remove(
-        "show"
-      );
-
-
-      modalImage.src =
-        "";
-
-    }
-
-
-    /* =========================================================
-       EVENT LISTENERS
-       ========================================================= */
-
-    document
-      .getElementById(
-        "searchBox"
-      )
-      .addEventListener(
-        "input",
-        renderInventory
-      );
-
-
-    document
-      .getElementById(
-        "franchiseFilter"
-      )
-      .addEventListener(
-        "change",
-        renderInventory
-      );
-
-
-    document
-      .getElementById(
-        "scaleFilter"
-      )
-      .addEventListener(
-        "change",
-        renderInventory
-      );
-
-
-    document
-      .getElementById(
-        "builtFilter"
-      )
-      .addEventListener(
-        "change",
-        renderInventory
-      );
-
-
-    document
-      .getElementById(
-        "closeModal"
-      )
-      .addEventListener(
-        "click",
-        closeImage
-      );
-
-
-    /*
-     * Clicking outside the image
-     * also closes the modal.
-     */
-
-    document
-      .getElementById(
-        "imageModal"
-      )
-      .addEventListener(
-        "click",
-        function(event) {
-
-          if (
-            event.target === this
-          ) {
-
-            closeImage();
-
-          }
-
-        }
-      );
-
-
-    /*
-     * ESC key closes the image
-     */
-
-    document.addEventListener(
-      "keydown",
+  document
+    .getElementById("imageModal")
+    .addEventListener(
+      "click",
       function(event) {
 
         if (
-          event.key === "Escape"
+          event.target === this
         ) {
-
           closeImage();
-
         }
 
       }
     );
 
 
-    /* =========================================================
-       START
-       ========================================================= */
+  /* =========================
+     FILTER EVENTS
+     ========================= */
 
-    loadInventory();
+  document
+    .getElementById("searchBox")
+    .addEventListener(
+      "input",
+      renderInventory
+    );
 
 
-  </script>
+  document
+    .getElementById("franchiseFilter")
+    .addEventListener(
+      "change",
+      renderInventory
+    );
 
+
+  document
+    .getElementById("scaleFilter")
+    .addEventListener(
+      "change",
+      renderInventory
+    );
+
+
+  document
+    .getElementById("builtFilter")
+    .addEventListener(
+      "change",
+      renderInventory
+    );
+
+
+  /* =========================
+     START
+     ========================= */
+
+  loadInventory();
+
+</script>
 
 </body>
-
 </html>
