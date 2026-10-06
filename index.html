@@ -61,7 +61,7 @@
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 15px;
       margin-bottom: 25px;
     }
@@ -151,6 +151,12 @@
       margin-top: 12px;
       font-weight: bold;
       color: #d00000;
+    }
+
+    .wishlisted {
+      margin-top: 12px;
+      font-weight: bold;
+      color: #7a4cc2;
     }
 
 
@@ -311,9 +317,10 @@
     </select>
 
     <select id="builtFilter">
-      <option value="">All Models</option>
-      <option value="Yes">Built</option>
-      <option value="No">Unbuilt</option>
+      <option value="">All Statuses</option>
+      <option value="yes">Built</option>
+      <option value="no">Unbuilt</option>
+      <option value="wishlisted">Wishlisted</option>
     </select>
 
   </div>
@@ -365,6 +372,22 @@
 
       <div
         id="totalUnbuilt"
+        class="stat-value"
+      >
+        0
+      </div>
+
+    </div>
+
+
+    <div class="stat">
+
+      <div class="stat-label">
+        Wishlisted
+      </div>
+
+      <div
+        id="totalWishlisted"
         class="stat-value"
       >
         0
@@ -704,9 +727,15 @@
         item.Scale === scale;
 
 
+      const itemStatus =
+        (item.Built || "")
+          .trim()
+          .toLowerCase();
+
+
       const matchesBuilt =
         !built ||
-        item.Built === built;
+        itemStatus === built;
 
 
       return (
@@ -732,18 +761,30 @@
 
     const totalBuilt =
       items.filter(
-        item => item.Built === "Yes"
+        item => (item.Built || "").trim().toLowerCase() === "yes"
       ).length;
 
 
     const totalUnbuilt =
-      totalKits - totalBuilt;
+      items.filter(
+        item => (item.Built || "").trim().toLowerCase() === "no"
+      ).length;
+
+
+    const totalWishlisted =
+      items.filter(
+        item => (item.Built || "").trim().toLowerCase() === "wishlisted"
+      ).length;
+
+
+    const ownedKits =
+      totalBuilt + totalUnbuilt;
 
 
     const buildPercentage =
-      totalKits > 0
+      ownedKits > 0
         ? Math.round(
-            (totalBuilt / totalKits) * 100
+            (totalBuilt / ownedKits) * 100
           )
         : 0;
 
@@ -758,6 +799,10 @@
 
     document.getElementById("totalUnbuilt")
       .textContent = totalUnbuilt;
+
+
+    document.getElementById("totalWishlisted")
+      .textContent = totalWishlisted;
 
 
     document.getElementById("buildPercentage")
@@ -863,18 +908,33 @@
        * BUILD STATUS
        */
 
-      const buildStatus =
-        item.Built === "Yes"
-          ? `
-            <div class="built">
-              Built
-            </div>
-          `
-          : `
-            <div class="unbuilt">
-              Unbuilt
-            </div>
-          `;
+      const status =
+        (item.Built || "")
+          .trim()
+          .toLowerCase();
+
+
+      let buildStatus = `
+        <div class="unbuilt">
+          Unbuilt
+        </div>
+      `;
+
+
+      if (status === "yes") {
+        buildStatus = `
+          <div class="built">
+            Built
+          </div>
+        `;
+      }
+      else if (status === "wishlisted") {
+        buildStatus = `
+          <div class="wishlisted">
+            Wishlisted
+          </div>
+        `;
+      }
 
 
       /*
